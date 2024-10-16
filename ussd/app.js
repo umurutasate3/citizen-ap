@@ -1,7 +1,4 @@
-// app.js
-
 const express = require('express');
-const session = require('express-session');
 const sha1 = require('sha1');
 const db = require('./config/db'); // Adjust path as necessary
 const fs = require('fs');
@@ -12,14 +9,6 @@ const PORT = 3000;
 // Body parser middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// Session configuration
-app.use(session({
-  secret: 'your_secret_key',  // Replace with a strong secret
-  resave: false,
-  saveUninitialized: true,
-  cookie: { secure: true }    // Set to true if using HTTPS
-}));
 
 // Load language translations
 const translations = {
@@ -34,12 +23,6 @@ function t(key, lang) {
 
 // USSD handler
 app.post('/ussd', (req, res) => {
-  // Ensure session is initialized
-  if (!req.session) {
-    console.error('Session is not initialized');
-    return res.send('END Session is not initialized');
-  }
-
   let { sessionId, serviceCode, phoneNumber, text } = req.body;
   let textArray = text.split('*');
   let userResponse = textArray[textArray.length - 1]; // Get the last user input
@@ -101,25 +84,24 @@ app.post('/ussd', (req, res) => {
             return res.send('END Invalid slot selection');
           }
 
-          // Set slotId based on user selection and store in session
-          req.session.slotId = slots[selectedSlotIndex].id;
-
-          return res.send(`CON ${t('enter_village', lang)}`);
+          // Proceed to village entry, passing slotId in the text string
+          let slotId = slots[selectedSlotIndex].id;
+          return res.send(`CON ${t('enter_village', lang)}*${slotId}`);
         });
       } else if (textArray.length === 4) {
-        // Village and reason for appointment
-        let village = userResponse;
-        return res.send(`CON ${t('enter_reason', lang)}`);
+        // Village and slotId received in text
+        let village = textArray[3];
+        let slotId = textArray[2]; // Extract the slotId from the previous step
+        return res.send(`CON ${t('enter_reason', lang)}*${slotId}*${village}`);
       } else if (textArray.length === 5) {
-        let reason = userResponse;
+        let reason = textArray[3];
+        let village = textArray[4];
+        let slotId = textArray[2];
         let citizenId = user.userId;
-
-        // Retrieve slotId from session
-        let slotId = req.session.slotId;
 
         // Save the appointment with the selected slot
         db.query('INSERT INTO appointments (village, reason, status, citizenId, slotId) VALUES (?, ?, ?, ?, ?)',
-          [textArray[3], reason, 'pending', citizenId, slotId], (err, result) => {
+          [village, reason, 'pending', citizenId, slotId], (err, result) => {
             if (err) {
               console.error(err);
               return res.send('END An error occurred while saving your appointment');
@@ -130,8 +112,6 @@ app.post('/ussd', (req, res) => {
               if (err) {
                 console.error(err);
               }
-              // Clear slotId from session after use
-              delete req.session.slotId;
               return res.send(`END ${t('appointment_successful', lang)}`);
             });
           });
