@@ -4,15 +4,15 @@ const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
     service: 'gmail', // Use your email service provider
     auth: {
-        user: 'paccyhabi@gmail.com', // Your email address
-        pass: 'xzec mayt wrwu ewch' // Your email password or app-specific password
+        user: 'claudeumurutasate4@gmail.com', // Your email address
+        pass: 'uxhb qwgi pfes lpny' // Your email password or app-specific password
     }
 });
 
 // Function to send an email
 module.exports = function sendEmail(to, subject, text) {
     const mailOptions = {
-        from: 'paccyhabi@gmail.com', // Sender's email address
+        from: 'claudeumurutasate4@gmail.com', // Sender's email address
         to: to, // Recipient's email address
         subject: subject, // Subject line
         text: text // Email body

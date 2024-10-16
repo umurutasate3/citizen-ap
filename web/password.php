@@ -40,12 +40,12 @@ if(isset($_POST['recover-submit']))
         $mail->CharSet = "utf-8";
         $mail->IsSMTP();
         $mail->SMTPAuth = true;
-        $mail->Username = "paccyhabi@gmail.com"; // Replace with your Gmail address
-        $mail->Password = "xzec mayt wrwu ewch"; // Replace with your Gmail password
+        $mail->Username = "claudeumurutasate4@gmail.com"; // Replace with your Gmail address
+        $mail->Password = "uxhb qwgi pfes lpny"; // Replace with your Gmail password
         $mail->SMTPSecure = "ssl";
         $mail->Host = "smtp.gmail.com";
         $mail->Port = 465;
-        $mail->From = "paccyhabi@gmail.com";
+        $mail->From = "claudeumurutasate4@gmail.com";
         $mail->FromName = 'Project verification management system';
         $mail->SMTPDebug = 0;
         $mail->addAddress($emailId, $row['username']);

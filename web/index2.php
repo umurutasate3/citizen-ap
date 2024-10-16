@@ -247,12 +247,12 @@ if (isset($_POST['btnSubmit'])) {
     $mail->CharSet = "utf-8";
     $mail->IsSMTP();
     $mail->SMTPAuth = true;
-    $mail->Username = "paccyhabi@gmail.com";
-    $mail->Password = "xzec mayt wrwu ewch"; 
+    $mail->Username = "claudeumurutasate4@gmail.com";
+    $mail->Password = "uxhb qwgi pfes lpny"; 
     $mail->SMTPSecure = "ssl";
     $mail->Host = "smtp.gmail.com";
     $mail->Port = 465;
-    $mail->From = "paccyhabi@gmail.com"; 
+    $mail->From = "claudeumurutasate4@gmail.com"; 
     $mail->FromName = 'Citizen appointment System || Contact Form';
     $mail->addAddress("paccyhabi@gmail.com"); 
     $mail->Subject = 'New Contact Message from ' . $name;
