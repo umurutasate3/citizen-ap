@@ -1,0 +1,10 @@
+# Enable URL rewriting
+RewriteEngine On
+
+# Redirect all requests except for existing files and directories to index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([a-zA-Z0-9_-]+)$ index.php?page=$1 [L]
+
+# Optionally redirect the root URL ("/") to a default page like home
+RewriteRule ^$ index.php?page=index2 [L]
