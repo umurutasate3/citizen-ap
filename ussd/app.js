@@ -1,10 +1,13 @@
 const express = require('express');
 const sha1 = require('sha1');
-const db = require('./config/db'); // Adjust path as necessary
+const db = require('./config/db'); // Adjust the path to your database configuration
 const fs = require('fs');
-const sendSMS = require('./sms/sendSMS');
+const sendSMS = require('./sms/sendSMS'); // Import the sendSMS function
+
 const app = express();
 const PORT = 3000;
+
+// ... (Twilio or Africa's Talking credentials)
 
 // Body parser middleware
 app.use(express.json());
@@ -27,11 +30,11 @@ app.post('/ussd', (req, res) => {
   let textArray = text.split('*');
   let userResponse = textArray[textArray.length - 1]; // Get the last user input
 
-  let lang = 'en'; // Default language
+  let lang = 'en'; // Default language is English
 
   // Language selection
   if (text === '') {
-    return res.send(`CON ${t('language_selection', lang)}`);
+    return res.send(`CON ${t('language_selection', lang)}\n1. English\n2. Kinyarwanda`);
   } else if (textArray[0] === '1') {
     lang = 'en';
   } else if (textArray[0] === '2') {
@@ -84,36 +87,37 @@ app.post('/ussd', (req, res) => {
             return res.send('END Invalid slot selection');
           }
 
-          // Proceed to village entry, passing slotId in the text string
+          // Pass the actual slotId, not the index
           let slotId = slots[selectedSlotIndex].id;
-          return res.send(`CON ${t('enter_village', lang)}*${slotId}`);
+          return res.send(`CON ${t('enter_village', lang)}`);
         });
       } else if (textArray.length === 4) {
-        // Village and slotId received in text
-        let village = textArray[3];
-        let slotId = textArray[2]; // Extract the slotId from the previous step
-        return res.send(`CON ${t('enter_reason', lang)}*${slotId}*${village}`);
+        // Village received, proceed to ask for the reason
+        let village = textArray[3]; // Correctly using the village
+        return res.send(`CON ${t('enter_reason', lang)}`);
       } else if (textArray.length === 5) {
-        let reason = textArray[3];
-        let village = textArray[4];
+        let reason = textArray[4];  // The reason for the appointment is entered here
+        let village = textArray[3];
         let slotId = textArray[2];
         let citizenId = user.userId;
 
         // Save the appointment with the selected slot
         db.query('INSERT INTO appointments (village, reason, status, citizenId, slotId) VALUES (?, ?, ?, ?, ?)',
-          [village, reason, 'pending', citizenId, slotId], (err, result) => {
+          [village, reason, 'pending', citizenId, slotId], async (err, result) => {
             if (err) {
               console.error(err);
               return res.send('END An error occurred while saving your appointment');
             }
 
-            // Mark the slot as unavailable
-            db.query('UPDATE slots SET availability = 0 WHERE id = ?', [slotId], (err, result) => {
-              if (err) {
-                console.error(err);
-              }
-              return res.send(`END ${t('appointment_successful', lang)}`);
-            });
+            // Send SMS to the user about the successful appointment
+            try {
+              const smsMessage = `Your appointment has been scheduled successfully! Village: ${village}, Reason: ${reason}`;
+              await sendSMS(phoneNumber, smsMessage); // Call sendSMS function
+            } catch (smsError) {
+              console.error('SMS sending failed:', smsError);
+            }
+
+            return res.send(`END ${t('appointment_successful', lang)}`);
           });
       }
     } else {
@@ -130,34 +134,14 @@ app.post('/ussd', (req, res) => {
         let password = sha1(textArray[3]);
 
         // Register user
-// After successfully saving the appointment
-db.query('INSERT INTO appointments (village, reason, status, citizenId, slotId) VALUES (?, ?, ?, ?, ?)',
-  [village, reason, 'pending', citizenId, slotId], (err, result) => {
-    if (err) {
-      console.error(err);
-      return res.send('END An error occurred while saving your appointment');
-    }
-
-    // Mark the slot as unavailable
-    db.query('UPDATE slots SET availability = 0 WHERE id = ?', [slotId], (err, result) => {
-      if (err) {
-        console.error(err);
-      }
-
-      // Construct detailed SMS message
-      let message = `${t('appointment_sms_heading', lang)}\n` +
-                    `${t('appointment_sms_village', lang)}: ${village}\n` +
-                    `${t('appointment_sms_reason', lang)}: ${reason}\n` +
-                    `${t('appointment_sms_status', lang)}: pending\n` +
-                    `${t('appointment_sms_time', lang)}: ${slotId}`;  // Optionally, format slot time based on DB query
-      
-      // Send the SMS to the user
-      sendSMS(phoneNumber, message);
-      
-      return res.send(`END ${t('appointment_successful', lang)}`);
-    });
-});
-
+        db.query('INSERT INTO users (username, email, password, phoneNumber) VALUES (?, ?, ?, ?)',
+          [username, email, password, phoneNumber], (err, result) => {
+            if (err) {
+              console.error(err);
+              return res.send('END Registration failed. Please try again later.');
+            }
+            return res.send(`END ${t('registration_successful', lang)}`);
+          });
       }
     }
   });
