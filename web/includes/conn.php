@@ -1,15 +1,15 @@
 <?php
-// $host = 'b7gbc7flaugenhm21xei-mysql.services.clever-cloud.com';
-// $db = 'b7gbc7flaugenhm21xei';
-// $user = 'uhylskz8zf8aqxqd';
-// $pass = 'PGpJXMYpzvF2Kl3pdEff';
-// $charset = 'utf8mb4';
-
-$host = 'localhost';
-$db = 'citizen';
-$user = 'root';
-$pass = '';
+$host = 'bwbusqyou6y36nq07nen-mysql.services.clever-cloud.com';
+$db = 'bwbusqyou6y36nq07nen';
+$user = 'ui5erqq1nmgauixl';
+$pass = 'am2w1jaNS2dIJMPwRZ0h';
 $charset = 'utf8mb4';
+
+// $host = 'localhost';
+// $db = 'citizen';
+// $user = 'root';
+// $pass = '';
+// $charset = 'utf8mb4';
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
 $options = [
     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
