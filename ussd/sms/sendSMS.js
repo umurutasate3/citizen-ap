@@ -12,7 +12,7 @@ module.exports = async function sendSMS(to, message) {
       const result = await africastalking.SMS.send({
         to: [to], 
         message: message,
-        from: ''
+        from: 'Akagali'
       });
       console.log(result);
       return result;
