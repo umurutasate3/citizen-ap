@@ -3,11 +3,10 @@ const sha1 = require('sha1');
 const db = require('./config/db'); // Adjust the path to your database configuration
 const fs = require('fs');
 const sendSMS = require('./sms/sendSMS'); // Import the sendSMS function
+const sendEmail = require('./sendEmail'); // Import the sendEmail function
 
 const app = express();
 const PORT = 3000;
-
-// ... (Twilio or Africa's Talking credentials)
 
 // Body parser middleware
 app.use(express.json());
@@ -109,12 +108,23 @@ app.post('/ussd', (req, res) => {
               return res.send('END An error occurred while saving your appointment');
             }
 
-            // Send SMS to the user about the successful appointment
+            // Prepare message details
+            const smsMessage = `Your appointment has been scheduled successfully! Village: ${village}, Reason: ${reason}`;
+            const emailSubject = 'Appointment Confirmation';
+            const emailMessage = `Dear ${user.username},\n\nYour appointment has been scheduled successfully with the following details:\n\nVillage: ${village}\nReason: ${reason}\nSlot ID: ${slotId}\n\nThank you!`;
+
+            // Send SMS to the user
             try {
-              const smsMessage = `Your appointment has been scheduled successfully! Village: ${village}, Reason: ${reason}`;
               await sendSMS(phoneNumber, smsMessage); // Call sendSMS function
             } catch (smsError) {
               console.error('SMS sending failed:', smsError);
+            }
+
+            // Send email to the user
+            try {
+              await sendEmail(user.email, emailSubject, emailMessage); // Call sendEmail function
+            } catch (emailError) {
+              console.error('Email sending failed:', emailError);
             }
 
             return res.send(`END ${t('appointment_successful', lang)}`);
