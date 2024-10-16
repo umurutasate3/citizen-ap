@@ -2,7 +2,7 @@ const express = require('express');
 const sha1 = require('sha1');
 const db = require('./config/db'); // Adjust path as necessary
 const fs = require('fs');
-
+const sendSMS = require('./sms/sendSMS');
 const app = express();
 const PORT = 3000;
 
@@ -130,14 +130,34 @@ app.post('/ussd', (req, res) => {
         let password = sha1(textArray[3]);
 
         // Register user
-        db.query('INSERT INTO users (username, email, password, phoneNumber) VALUES (?, ?, ?, ?)',
-          [username, email, password, phoneNumber], (err, result) => {
-            if (err) {
-              console.error(err);
-              return res.send('END Registration failed. Please try again later.');
-            }
-            return res.send(`END ${t('registration_successful', lang)}`);
-          });
+// After successfully saving the appointment
+db.query('INSERT INTO appointments (village, reason, status, citizenId, slotId) VALUES (?, ?, ?, ?, ?)',
+  [village, reason, 'pending', citizenId, slotId], (err, result) => {
+    if (err) {
+      console.error(err);
+      return res.send('END An error occurred while saving your appointment');
+    }
+
+    // Mark the slot as unavailable
+    db.query('UPDATE slots SET availability = 0 WHERE id = ?', [slotId], (err, result) => {
+      if (err) {
+        console.error(err);
+      }
+
+      // Construct detailed SMS message
+      let message = `${t('appointment_sms_heading', lang)}\n` +
+                    `${t('appointment_sms_village', lang)}: ${village}\n` +
+                    `${t('appointment_sms_reason', lang)}: ${reason}\n` +
+                    `${t('appointment_sms_status', lang)}: pending\n` +
+                    `${t('appointment_sms_time', lang)}: ${slotId}`;  // Optionally, format slot time based on DB query
+      
+      // Send the SMS to the user
+      sendSMS(phoneNumber, message);
+      
+      return res.send(`END ${t('appointment_successful', lang)}`);
+    });
+});
+
       }
     }
   });
