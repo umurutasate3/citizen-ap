@@ -31,7 +31,7 @@ if(isset($_POST['recover-submit']))
         $stmt->execute();
 
         // Construct reset password link
-        $link = "<a href='http://localhost/citizen/reset-password.php?key=".$emailId."&token=".$token."'>Click To Reset password</a>";
+        $link = "<a href='https://citizen.cleverapps.io/web/reset-password.php?key=".$emailId."&token=".$token."'>Click To Reset password</a>";
 
         // Send email using PHPMailer
         require 'vendor/autoload.php';
@@ -46,7 +46,7 @@ if(isset($_POST['recover-submit']))
         $mail->Host = "smtp.gmail.com";
         $mail->Port = 465;
         $mail->From = "claudeumurutasate4@gmail.com";
-        $mail->FromName = 'Project verification management system';
+        $mail->FromName = 'Citizen Appointment System';
         $mail->SMTPDebug = 0;
         $mail->addAddress($emailId, $row['username']);
         $mail->Subject = 'Reset Password';
@@ -55,10 +55,10 @@ if(isset($_POST['recover-submit']))
     <p>Hello ' . $row['username'] . ',</p>
     <p>You requested to reset your password for your account.</p>
     <p>To reset your password, please click the link below:</p>
-    <p><a href="http://localhost/citizen/reset-password.php?key=' . $emailId . '&token=' . $token . '">Click To Reset Password</a></p>
+    <p><a href="https://citizen.cleverapps.io/web/reset-password.php?key=' . $emailId . '&token=' . $token . '">Click To Reset Password</a></p>
     <p>This link will expire in 5 minutes for your security. If you did not request a password reset, please ignore this email.</p>
     <p>Thank you!</p>
-    <p>Best regards,<br>Your Project Verification Management System</p>
+    <p>Best regards,<br>Your Citizen Appointment System</p>
 ';
 
 

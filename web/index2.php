@@ -254,7 +254,7 @@ if (isset($_POST['btnSubmit'])) {
     $mail->Port = 465;
     $mail->From = "claudeumurutasate4@gmail.com"; 
     $mail->FromName = 'Citizen appointment System || Contact Form';
-    $mail->addAddress("paccyhabi@gmail.com"); 
+    $mail->addAddress("claudeumurutasate4@gmail.com"); 
     $mail->Subject = 'New Contact Message from ' . $name;
     $mail->isHTML(true);
     $mail->Body = "

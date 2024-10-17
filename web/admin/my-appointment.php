@@ -163,12 +163,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $mail->CharSet = "utf-8";
     $mail->IsSMTP();
     $mail->SMTPAuth = true;
-    $mail->Username = "paccyhabi@gmail.com"; // Your email
-    $mail->Password = "xzec mayt wrwu ewch"; // Your email password
+    $mail->Username = "claudeumurutasate4@gmail.com"; // Your email
+    $mail->Password = "uxhb qwgi pfes lpny"; // Your email password
     $mail->SMTPSecure = "ssl";
     $mail->Host = "smtp.gmail.com";
     $mail->Port = 465;
-    $mail->From = "paccyhabi@gmail.com"; // Your email
+    $mail->From = "claudeumurutasate4@gmail.com"; // Your email
     $mail->FromName = 'Citizen Appointment System';
     $mail->addAddress($userEmail); // User's email
     $mail->Subject = 'Appointment Status Updated';
