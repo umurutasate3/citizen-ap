@@ -6,16 +6,17 @@ if (isset($_POST['addUser'])) {
     $username = $_POST['username'];
     $email = $_POST['email'];
     $password = $_POST['password'];
+    $phoneNumber = $_POST['phoneNumber'];
     $role = "officer";
 
     // Hash the password using SHA1
     $hashedPassword = sha1($password);
     
     // Insert the user into the database
-    $sql = "INSERT INTO users (username, email, password, role) VALUES (:username, :email, :password, :role)";
+    $sql = "INSERT INTO users (username, email,phoneNumber, password, role) VALUES (:username, :email, :phoneNumber, :password, :role)";
     $stmt = $pdo->prepare($sql);
 
-    if ($stmt->execute(['username' => $username, 'email' => $email, 'password' => $hashedPassword, 'role' => $role])) {
+    if ($stmt->execute(['username' => $username, 'email' => $email, 'phoneNumber' => $phoneNumber, 'password' => $hashedPassword, 'role' => $role])) {
         echo "<script>alert('User Added!');</script>";
     } else {
         echo "<script>alert('Failed to add user!');</script>";
@@ -67,6 +68,10 @@ if (isset($_POST['addUser'])) {
                   <input type="email" class="form-control" placeholder="Enter email" required name="email">
                 </div>
                 <div class="form-group">
+                <div class="form-group">
+                  <label>Phone</label>
+                  <input type="text" class="form-control" placeholder="Enter Phone Number" required name="phoneNumber">
+                </div>
                   <!-- <label>Password</label> -->
                   <input type="hidden" class="form-control" value="123" required name="password" >
                 </div>
