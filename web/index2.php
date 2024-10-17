@@ -14,7 +14,7 @@ if (isset($_POST['login'])) {
     if ($user) {
         $_SESSION["username"] = $user["username"];
         $_SESSION["role"] = $user["role"];
-           header("Location: ./includes/files.php");
+            header("location:./admin/");
         exit;
     } else {
         $message = 'Invalid username or password';
