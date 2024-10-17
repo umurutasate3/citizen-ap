@@ -20,7 +20,7 @@ if (isset($_POST['register'])) {
         if ($stmt->execute([$username,$email,$phone,$password])) {
             $_SESSION["username"] = $username;
             $_SESSION["role"] = "umuturage";
-            header("Location: ./includes/files.php");
+            header("Location: ./admin/");
             exit;
         } else {
             $message = 'Error creating account. Please try again.';
