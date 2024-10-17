@@ -218,7 +218,7 @@ if (isset($_POST['login'])) {
                     <p class="lead">Easily book your appointment with your cell officer and manage your time efficiently.</p>
             
                     <div class="button">
-                        <a href="https://www.youtube.com" class="btn btn-color text-white mr-1">Watch Video</a>
+                        <a href="https://youtu.be/qvZ-Og3sTGg" class="btn btn-color text-white mr-1">Watch Video</a>
                         <a href="#" class="btn btn-outline-primary ml-1 text-white" data-toggle="modal" data-target="#loginModal">Discover...</a>
                     </div>
                 </div>
